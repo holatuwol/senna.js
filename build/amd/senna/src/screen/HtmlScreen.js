@@ -347,20 +347,7 @@ define(['exports', 'metal/src/metal', 'metal-dom/src/all/dom', 'metal-promise/sr
 					_this7.resolveTitleFromVirtualDocument();
 					_this7.resolveMetaTagsFromVirtualDocument();
 					_this7.assertSameBodyIdInVirtualDocument();
-					if (_UA2.default.isIe) {
-						_this7.makeTemporaryStylesHrefsUnique_();
-					}
 					return content;
-				});
-			}
-		}, {
-			key: 'makeTemporaryStylesHrefsUnique_',
-			value: function makeTemporaryStylesHrefsUnique_() {
-				var _this8 = this;
-
-				var temporariesInDoc = this.virtualQuerySelectorAll_(HtmlScreen.selectors.stylesTemporary);
-				temporariesInDoc.forEach(function (style) {
-					return _this8.replaceStyleAndMakeUnique_(style);
 				});
 			}
 		}, {
@@ -437,14 +424,26 @@ define(['exports', 'metal/src/metal', 'metal-dom/src/all/dom', 'metal-promise/sr
   * @static
   */
 	HtmlScreen.selectors = {
-		favicon: 'link[rel="Shortcut Icon"],link[rel="shortcut icon"],link[rel="icon"],link[href$="favicon.icon"]',
+		favicon: 'link[rel="Shortcut Icon"],link[rel="shortcut icon"],link[rel="icon"],link[href$="favicon.icon"]'
+	};
+
+	HtmlScreen.scriptSelectors = {
 		scripts: 'script[data-senna-track]',
 		scriptsPermanent: 'script[data-senna-track="permanent"]',
-		scriptsTemporary: 'script[data-senna-track="temporary"]',
+		scriptsTemporary: 'script[data-senna-track="temporary"]'
+	};
+
+	HtmlScreen.styleSelectors = {
 		styles: 'style[data-senna-track],link[data-senna-track]' + ignoreFavicon,
 		stylesPermanent: 'style[data-senna-track="permanent"],link[data-senna-track="permanent"]' + ignoreFavicon,
 		stylesTemporary: 'style[data-senna-track="temporary"],link[data-senna-track="temporary"]' + ignoreFavicon
 	};
+
+	Object.assign(HtmlScreen.selectors, HtmlScreen.scriptSelectors);
+
+	if (!_UA2.default.isIe) {
+		Object.assign(HtmlScreen.selectors, HtmlScreen.styleSelectors);
+	}
 
 	/**
   * Caches permanent resource keys.

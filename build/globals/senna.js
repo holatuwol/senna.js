@@ -11213,27 +11213,7 @@ var HtmlScreen = function (_RequestScreen) {
 				_this7.resolveTitleFromVirtualDocument();
 				_this7.resolveMetaTagsFromVirtualDocument();
 				_this7.assertSameBodyIdInVirtualDocument();
-				if (UA.isIe) {
-					_this7.makeTemporaryStylesHrefsUnique_();
-				}
 				return content;
-			});
-		}
-
-		/**
-   * Queries temporary styles from virtual document, and makes them unique.
-   * This is necessary for caching and load event firing issues specific to
-   * IE11. https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7940171/
-   */
-
-	}, {
-		key: 'makeTemporaryStylesHrefsUnique_',
-		value: function makeTemporaryStylesHrefsUnique_() {
-			var _this8 = this;
-
-			var temporariesInDoc = this.virtualQuerySelectorAll_(HtmlScreen.selectors.stylesTemporary);
-			temporariesInDoc.forEach(function (style) {
-				return _this8.replaceStyleAndMakeUnique_(style);
 			});
 		}
 
@@ -11355,14 +11335,26 @@ var ignoreFavicon = ':not([rel="Shortcut Icon"]):not([rel="shortcut icon"]):not(
  * @static
  */
 HtmlScreen.selectors = {
-	favicon: 'link[rel="Shortcut Icon"],link[rel="shortcut icon"],link[rel="icon"],link[href$="favicon.icon"]',
+	favicon: 'link[rel="Shortcut Icon"],link[rel="shortcut icon"],link[rel="icon"],link[href$="favicon.icon"]'
+};
+
+HtmlScreen.scriptSelectors = {
 	scripts: 'script[data-senna-track]',
 	scriptsPermanent: 'script[data-senna-track="permanent"]',
-	scriptsTemporary: 'script[data-senna-track="temporary"]',
+	scriptsTemporary: 'script[data-senna-track="temporary"]'
+};
+
+HtmlScreen.styleSelectors = {
 	styles: 'style[data-senna-track],link[data-senna-track]' + ignoreFavicon,
 	stylesPermanent: 'style[data-senna-track="permanent"],link[data-senna-track="permanent"]' + ignoreFavicon,
 	stylesTemporary: 'style[data-senna-track="temporary"],link[data-senna-track="temporary"]' + ignoreFavicon
 };
+
+Object.assign(HtmlScreen.selectors, HtmlScreen.scriptSelectors);
+
+if (!UA.isIe) {
+	Object.assign(HtmlScreen.selectors, HtmlScreen.styleSelectors);
+}
 
 /**
  * Caches permanent resource keys.
