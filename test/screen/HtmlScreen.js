@@ -338,26 +338,6 @@ describe('HtmlScreen', function() {
 		screen.activate();
 	});
 
-	it('should mutate temporary style hrefs to be unique on ie browsers', (done) => {
-		// This test will run only on IE
-		if (!UA.isIe) {
-			done();
-		} else {
-			var screen = new HtmlScreen();
-
-			screen.load('/url').then(() => {
-				screen.evaluateStyles({})
-					.then(() => {
-						assert.ok(document.getElementById('testIEStlye').href.indexOf('?zx=') > -1);
-						done();
-					});
-				screen.activate();
-			});
-
-			this.requests[0].respond(200, null, '<link id="testIEStlye" data-senna-track="temporary" rel="stylesheet" href="testIEStlye.css">');
-		}
-	});
-
 	it('link elements should only be loaded once in IE', (done) => {
 		// This test will run only on IE
 		if (!UA.isIe) {
